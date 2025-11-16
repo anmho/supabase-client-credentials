@@ -1,0 +1,19 @@
+{
+  "name": "supabase-client-credentials",
+  "type": "module",
+  "private": true,
+  "bin": {
+    "supabase-m2m": "./main.ts"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.39.0",
+    "@clack/prompts": "^0.7.0",
+    "commander": "^11.1.0"
+  },
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  }
+}
