@@ -1,0 +1,21 @@
+{
+  "name": "setup",
+  "private": true,
+  "scripts": {
+    "start": "bun run server.ts",
+    "seed": "bun run seed.ts"
+  },
+  "dependencies": {
+    "@hono/zod-validator": "^0.3.0",
+    "@supabase/supabase-js": "^2.39.0",
+    "hono": "^4.0.0",
+    "jose": "^5.2.0",
+    "zod": "^3.22.4"
+  },
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  }
+}

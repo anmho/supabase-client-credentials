@@ -1,0 +1,24 @@
+{
+  "compilerOptions": {
+    "lib": ["deno.window", "deno.unstable"],
+    "strict": true,
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "strictFunctionTypes": true,
+    "strictPropertyInitialization": true,
+    "noImplicitThis": true,
+    "alwaysStrict": true,
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true
+  },
+  "imports": {
+    "hono": "npm:hono@^4.0.0",
+    "@hono/zod-validator": "npm:@hono/zod-validator@^0.3.0",
+    "@supabase/supabase-js": "https://esm.sh/@supabase/supabase-js@2",
+    "bcrypt": "npm:bcryptjs@^2.4.3",
+    "jose": "https://deno.land/x/jose@v5.2.0/index.ts",
+    "zod": "npm:zod@^3.22.4"
+  }
+}
