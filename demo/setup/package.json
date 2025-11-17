@@ -2,8 +2,7 @@
   "name": "setup",
   "private": true,
   "scripts": {
-    "start": "bun run server.ts",
-    "seed": "bun run seed.ts"
+    "start": "bun run server.ts"
   },
   "dependencies": {
     "@hono/zod-validator": "^0.3.0",
