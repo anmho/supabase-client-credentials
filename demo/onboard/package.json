@@ -1,0 +1,13 @@
+{
+  "name": "onboard",
+  "scripts": {
+    "start": "bun run payroll-service.ts"
+  },
+  "private": true,
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  }
+}
