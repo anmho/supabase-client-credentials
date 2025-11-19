@@ -2,7 +2,8 @@
   "name": "setup",
   "private": true,
   "scripts": {
-    "start": "bun run server.ts"
+    "start": "bun run server.ts",
+    "functions": "supabase functions serve --no-verify-jwt --env-file .env.functions"
   },
   "dependencies": {
     "@hono/zod-validator": "^0.3.0",
