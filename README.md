@@ -38,6 +38,55 @@ This will:
 
 **Note**: If you encounter an error about a missing package.json in your home directory, ensure you're running the command from the project root directory.
 
+## Demo Setup From Scratch
+
+The `demo/setup/supabase/config.toml` configuration expects a local signing key at `./signing_key.json`. To reproduce the full demo from a clean Supabase project:
+
+1. **Initialize Supabase locally**
+
+   ```bash
+   cd demo/setup
+   supabase init
+   ```
+
+2. **Generate the signing key referenced by `config.toml`**
+
+   `supabase gen signing-key` prints a single ES256 JWK such as `{"kty":"EC","kid":"652d13cf-59f0-4214-bee7-3acb6472b461","use":"sig",...}` to `stdout` while instructions (e.g., “wrap the key in []”) go to `stderr`. Supabase expects an array of keys, so wrap the JSON object in square brackets before saving:
+
+   ```bash
+   supabase gen signing-key | jq -s '.' > supabase/signing_key.json
+   ```
+
+   ```toml
+   [auth]
+   signing_keys_path = "./signing_key.json"
+   ```
+
+3. **Start the local stack**
+
+   ```bash
+   supabase start
+   ```
+
+4. **Create test JWTs for your flows**
+
+   ```bash
+   # Generate an authenticated-user token (replace with a valid UUID)
+   supabase gen bearer-jwt --role authenticated --user-id <user_id>
+
+   # Generate a service-role token
+   supabase gen bearer-jwt --role service_role
+   ```
+
+5. **Run the Bun demo server**
+
+   ```bash
+   bun install
+   bun run server.ts
+   ```
+
+These steps align the demo environment with the repository defaults and ensure the Supabase CLI outputs (signing key and bearer JWTs) match the expectations baked into `config.toml`.
+
 ## Usage
 
 ### Setup Command
