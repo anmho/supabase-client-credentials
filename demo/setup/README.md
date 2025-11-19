@@ -79,7 +79,7 @@ Or manually create `.env` with values from `supabase status`:
 - `SUPABASE_SECRET_KEY` - Secret key (sb*secret*...) for database operations (bypasses RLS)
 - `SUPABASE_SERVICE_ROLE_KEY` - Service role key (deprecated JWT-based key, technically still works but not recommended)
 
-**Note**: JWT verification uses JWKS from Supabase's public endpoint (`/auth/v1/.well-known/jwks.json`), so no JWT secret is needed in the Employee Service.
+**Note**: JWT verification uses the local Supabase JWKS endpoint (`http://127.0.0.1:54321/auth/v1/.well-known/jwks.json`), so no JWT secret is needed in the Employee Service.
 
 #### For the M2M Token Edge Function
 
@@ -118,7 +118,15 @@ The edge function needs a private signing key to mint tokens. Add `JWT_PRIVATE_K
    ]
    ```
 
-3. **Run the edge function with the `.env` file:**
+3. **Verify the local JWKS endpoint exposes your public key:**
+
+   ```bash
+   curl http://127.0.0.1:54321/auth/v1/.well-known/jwks.json | jq
+   ```
+
+   You should see the `kty`, `kid`, `x`, and `y` values from the key you saved in `supabase/signing_key.json`. If the array is empty, restart `supabase start` and double-check `[auth].signing_keys_path`.
+
+4. **Run the edge function with the `.env` file:**
 
    ```bash
    supabase functions serve m2m-token --env-file .env
@@ -190,6 +198,29 @@ bun run server.ts
 ```
 
 The server will start on `http://localhost:3000` (or the port specified in `PORT` env var).
+
+### 5. Example: Generate a Token and Call the API
+
+With Supabase running locally and the Employee Service started:
+
+1. **Generate a service-role JWT using the Supabase CLI:**
+
+   ```bash
+   TOKEN=$(supabase gen bearer-jwt --role service_role | tr -d '\n')
+   echo "$TOKEN"
+   ```
+
+   Copy the printed token (keep it secret).
+
+2. **Call the Employees endpoint using curl and the token:**
+
+   ```bash
+   curl -s \
+     -H "Authorization: Bearer $TOKEN" \
+     http://localhost:3000/employees | jq
+   ```
+
+   You should receive the list of employees created by the setup script. Any `401` errors typically mean the JWT has expired or GoTrue couldn’t find your signing key—re-run `supabase gen bearer-jwt` and ensure `http://127.0.0.1:54321/auth/v1/.well-known/jwks.json` returns your public key.
 
 ## Employee Service API
 

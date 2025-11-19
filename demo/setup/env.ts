@@ -7,7 +7,7 @@ import { z } from 'zod';
 // See: https://supabase.com/docs/guides/api/api-keys
 const envSchema = z
   .object({
-    SUPABASE_URL: z.string().url().default('http://localhost:54321'),
+    SUPABASE_URL: z.string().url(),
     SUPABASE_SECRET_KEY: z.string().min(1).optional(),
     SUPABASE_SERVICE_ROLE_KEY: z.string().min(1).optional(),
     PORT: z
@@ -39,6 +39,15 @@ if (!envResult.success) {
 }
 
 export const env = envResult.data;
+
+const normalizedSupabaseUrl = env.SUPABASE_URL.replace(
+  'localhost',
+  '127.0.0.1'
+);
+export const jwksUrl = new URL(
+  '/auth/v1/.well-known/jwks.json',
+  normalizedSupabaseUrl
+).toString();
 
 // Prefer SECRET_KEY (modern sb_secret_... format), fallback to SERVICE_ROLE_KEY (deprecated JWT)
 // Both provide elevated privileges and bypass RLS

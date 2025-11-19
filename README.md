@@ -62,13 +62,24 @@ The `demo/setup/supabase/config.toml` configuration expects a local signing key 
    signing_keys_path = "./signing_key.json"
    ```
 
-3. **Start the local stack**
+3. **Apply the `machine_secrets` migration template**
+
+   Copy the provided migration into your project and apply it so the `machine_secrets` table exists before running the CLI demo:
+
+   ```bash
+   # From repo root
+   ts=$(date +%Y%m%d%H%M%S)
+   cp template/migrations/create_machine_secrets_table.sql supabase/migrations/${ts}_create_machine_secrets_table.sql
+   supabase db push
+   ```
+
+4. **Start the local stack**
 
    ```bash
    supabase start
    ```
 
-4. **Create test JWTs for your flows**
+5. **Create test JWTs for your flows**
 
    ```bash
    # Generate an authenticated-user token (replace with a valid UUID)
@@ -78,11 +89,34 @@ The `demo/setup/supabase/config.toml` configuration expects a local signing key 
    supabase gen bearer-jwt --role service_role
    ```
 
-5. **Run the Bun demo server**
+6. **Run the Bun demo server**
 
    ```bash
    bun install
    bun run server.ts
+   ```
+
+7. **(Optional) Link to a remote Supabase project**
+
+   Once you're ready to move beyond local dev, link the cloned repo to an existing Supabase project (grab the project ref from the dashboard):
+
+   ```bash
+   supabase link --project-ref <project_ref>
+   ```
+
+8. **Pull, customize, then push the schema**
+
+   After linking, sync the remote schema, run the local setup (which creates the `machine_secrets` table), and push the new migration back to prod:
+
+   ```bash
+   # Fetch the latest prod schema before making changes
+   supabase db pull
+
+   # Run supabase-m2m setup locally (creates/updates migrations)
+   supabase-m2m setup
+
+   # Push the new schema (including machine_secrets) to the linked project
+   supabase db push
    ```
 
 These steps align the demo environment with the repository defaults and ensure the Supabase CLI outputs (signing key and bearer JWTs) match the expectations baked into `config.toml`.

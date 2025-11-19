@@ -8,8 +8,8 @@ import { cors } from 'hono/cors';
 import { zValidator } from '@hono/zod-validator';
 import { createClient } from '@supabase/supabase-js';
 import type { JWTPayload } from 'jose';
-import { env, apiKey } from './env';
-import { authMiddleware } from './auth';
+import { env, apiKey, jwksUrl } from './env';
+import { createAuthMiddleware } from './auth';
 import {
   uuidParamSchema,
   createEmployeeBodySchema,
@@ -58,6 +58,7 @@ app.get('/health', (c) => {
 });
 
 // Apply auth middleware to all employee routes
+const authMiddleware = createAuthMiddleware(jwksUrl);
 app.use('/employees/*', authMiddleware);
 
 // GET /employees - List all employees
@@ -155,6 +156,7 @@ app.get('/auth/me', authMiddleware, (c: Context) => {
 
 console.log(`🚀 Server starting on http://localhost:${env.PORT}`);
 console.log(`📊 Supabase URL: ${env.SUPABASE_URL}`);
+console.log(`🔐 JWKS URL: ${jwksUrl}`);
 
 export default {
   port: env.PORT,
